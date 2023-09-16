@@ -1,0 +1,40 @@
+<script setup lang="ts">
+import { useQuasar } from 'quasar'
+import { computed } from 'vue'
+
+const isSm = computed(() => useQuasar().screen.sm || useQuasar().screen.xs)
+</script>
+<template>
+  <template v-if="isSm">
+    <div class="full-width">
+      <h1 class="text-h3">
+        <slot name="title" />
+      </h1>
+      <div>
+        <slot name="image" />
+      </div>
+      <div class="q-px-md">
+        <h3 v-if="$slots.year"><slot name="year" /></h3>
+        <div class="text-h4">
+          <slot name="downloads" />
+        </div>
+      </div>
+    </div>
+  </template>
+  <template v-else>
+    <div class="full-width row">
+      <div class="col-5">
+        <slot name="image" />
+      </div>
+      <div class="col-7 q-px-md">
+        <h1>
+          <slot name="title" />
+        </h1>
+        <h3 v-if="$slots.year"><slot name="year" /></h3>
+        <div class="text-h4">
+          <slot name="downloads" />
+        </div>
+      </div>
+    </div>
+  </template>
+</template>
