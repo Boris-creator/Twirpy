@@ -45,7 +45,7 @@ class BookRequest extends FormRequest
                 $hash = sha1_file($this->file('file'));
                 if (Book::query()->where('hash_sum', '=', $hash)->exists())
                 {
-                   // $validator->errors()->add('file', 'already exists');
+                   $validator->errors()->add('file', 'already exists');
                 };
             }
         ];
