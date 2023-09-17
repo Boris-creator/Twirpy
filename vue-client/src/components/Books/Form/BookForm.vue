@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue'
-import type { Book } from '@/types/Book'
+import type { Book, BookBibliography } from '@/types/Book'
 import type { Nullable, NullableFields } from '@/types/utils'
 import { api } from '@/axios'
 import { useForm } from 'vee-validate'
 import * as zod from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import FormInput from '@/components/Books/Form/FormInput.vue'
+import AutoSuggest from '@/components/Books/Form/AutoSuggest.vue'
 
-const MAX_FILE_SIZE = 80000000
+const MAX_FILE_SIZE = 800 * 10 ** 5
 
 const bookToUpload: NullableFields<
-  Book & {
+  BookBibliography & {
     file: File
   }
 > = {
@@ -20,14 +21,12 @@ const bookToUpload: NullableFields<
   year: null,
   publishedBy: null,
   isbn: null,
-  ownerId: null,
-  accessible: null,
   file: null,
   id: null,
   titleThumbnail: null
 }
 
-const { defineInputBinds, handleSubmit, errors } = useForm<
+const { defineInputBinds, handleSubmit, errors, setErrors } = useForm<
   NullableFields<
     Book & {
       file: File
@@ -39,7 +38,8 @@ const { defineInputBinds, handleSubmit, errors } = useForm<
       title: zod.string().nonempty(),
       publishedBy: zod
         .object({
-          id: zod.number().or(zod.null())
+          id: zod.number().or(zod.null()),
+          name: zod.string().min(2)
         })
         .or(zod.null()),
       isbn: zod
@@ -61,24 +61,48 @@ const publishedBy = defineInputBinds('publishedBy')
 
 const publisherOptions = ref<Array<{ value: Book['publishedBy']; label: string }>>([])
 
-const uploadBook = handleSubmit((values) => {
-  api.postForm('/books', values)
+const isFetchingPublishers = ref(false)
+const fetchPublishers = (query: string | null) => {
+  isFetchingPublishers.value = true
+  api
+    .get(`/publishers?search=${query ?? ''}`)
+    .then((response) => {
+      publisherOptions.value = response.data
+    })
+    .finally(() => {
+      isFetchingPublishers.value = false
+    })
+}
+
+const uploadBook = handleSubmit(async (values) => {
+  api.postForm('/books', values).catch((error) => {
+    setErrors(error.response?.data.errors)
+  })
 })
 
-onBeforeMount(async () => {
-  const response = await api.get('/publishers')
-  publisherOptions.value = response.data
+onBeforeMount(() => {
+  fetchPublishers(null)
 })
 </script>
 
 <template>
   <q-form @submit.prevent="uploadBook">
     <form-input :value="title" :errors="errors.title" label="Book title" autofocus outlined />
-    <q-select
+    <!--<q-select
       :model-value="publishedBy.value"
       :options="publisherOptions"
       option-label="name"
       @update:model-value="publishedBy.onInput"
+    />-->
+    <auto-suggest
+      :model-value="publishedBy.value"
+      :options="publisherOptions"
+      option-label="name"
+      :label-to-option="(name: string) => ({ name, id: null })"
+      :input-props="{ label: 'Publishers', errors: errors.publishedBy }"
+      :loading="isFetchingPublishers"
+      @update:model-value="publishedBy.onInput"
+      @update:query="fetchPublishers"
     />
     <form-input
       :value="isbn"

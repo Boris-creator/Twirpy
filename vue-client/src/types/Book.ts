@@ -1,8 +1,7 @@
 export type Author = {
   name: string
 }
-
-export type Book = {
+export type BookBibliography = {
   authors: Array<Author>
   title: string
   year: number | string
@@ -13,7 +12,9 @@ export type Book = {
   isbn: string
   id: number
   titleThumbnail: string
-} & {
+}
+
+export type Book = BookBibliography & {
   ownerId: number
   accessible: boolean
   downloads_count: number

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BookRequest;
 use App\Http\Resources\BookCollection;
 use App\Models\Book;
+use App\Models\Publisher;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -23,11 +24,21 @@ class BooksController extends Controller
     {
         $userId = $request->user()->id;
         $file = $request->file('file');
+
+        $publisherId = $request->input('publishedBy.id');
+        if (!isset($publisherId) && $request->has('publishedBy.name'))
+        {
+            global $publisherId;
+            $newPublisher = Publisher::query()->create([
+                'name' => $request->input('publishedBy.name')
+            ]);
+            $publisherId = $newPublisher->id;
+        }
         $newBook = Book::query()->create(array_merge(
             $request->only(['title', 'isbn']),
             [
                 'owner_id' => $userId,
-                'published_by' => $request->input('publishedBy.id')
+                'published_by' => $publisherId
             ]
         ));
         User::query()->find($userId)->accessibleBooks()->attach($newBook->id);
@@ -38,7 +49,6 @@ class BooksController extends Controller
         //$file->storeAs('books', $file_name); //#1
         Storage::disk('local')->put('books' . DIRECTORY_SEPARATOR . $file_name, file_get_contents($file)); //#2
 
-        logger(storage_path() . DIRECTORY_SEPARATOR . 'books' . DIRECTORY_SEPARATOR . $file_name);
         $newBook->hash_sum = sha1_file(storage_path() . '/app/books/' . $file_name);
 
         $newBook->save();

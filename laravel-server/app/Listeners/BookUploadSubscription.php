@@ -27,7 +27,6 @@ class BookUploadSubscription
         {
             return;
         }
-        logger(sprintf('https://openlibrary.org/isbn/%s.json', $book->isbn));
 
         $fetch = curl_init(sprintf('https://openlibrary.org/isbn/%s.json', $book->isbn));
         curl_setopt($fetch, CURLOPT_FOLLOWLOCATION, 1);
@@ -38,7 +37,6 @@ class BookUploadSubscription
         }
         curl_close($fetch);
         $book_data = json_decode($res, true);
-        logger($res);
         if (isset($book_data['publish_date']) && !isset($book->year))
         {
             $book->year = $book_data['publish_date'];
