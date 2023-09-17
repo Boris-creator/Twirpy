@@ -4,7 +4,7 @@ import { debounce } from 'quasar'
 
 const props = defineProps({
   modelValue: {
-    type: [String, Number, Object],
+    type: [String, Number, Object] as PropType<string | number | Record<any, any> | null>,
     required: true
   },
   options: {
@@ -39,7 +39,7 @@ const emits = defineEmits<{
 }>()
 
 const getOptionLabel = (option: unknown) => {
-  if (option === null) {
+  if ((option ?? null) === null) {
     return null
   }
   if (typeof props.optionLabel === 'function') {

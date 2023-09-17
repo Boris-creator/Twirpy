@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Events\BookUploaded;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookRequest;
-use App\Http\Resources\BookCollection;
+use App\Http\Requests\BookUpdateRequest;
 use App\Models\Book;
 use App\Models\Publisher;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,17 +23,8 @@ class BooksController extends Controller
     public function store(BookRequest $request)
     {
         $userId = $request->user()->id;
-        $file = $request->file('file');
 
-        $publisherId = $request->input('publishedBy.id');
-        if (!isset($publisherId) && $request->has('publishedBy.name'))
-        {
-            global $publisherId;
-            $newPublisher = Publisher::query()->create([
-                'name' => $request->input('publishedBy.name')
-            ]);
-            $publisherId = $newPublisher->id;
-        }
+        $publisherId = $this->selectOrCreatePublisher($request);
         $newBook = Book::query()->create(array_merge(
             $request->only(['title', 'isbn']),
             [
@@ -43,6 +34,7 @@ class BooksController extends Controller
         ));
         User::query()->find($userId)->accessibleBooks()->attach($newBook->id);
 
+        $file = $request->file('file');
         $file_name = $newBook->id . '.' . $file->getClientOriginalExtension();
         $newBook->filename = $file_name;
 
@@ -58,12 +50,21 @@ class BooksController extends Controller
 
     public function show(string $id)
     {
-        return (new \App\Http\Resources\Book(Book::withCount('downloads')->findOrFail($id)))->toArray(\request());
+        return (new \App\Http\Resources\Book(Book::with('publisher')->withCount('downloads')->findOrFail($id)))->toArray(\request());
     }
 
-    public function update(Request $request, string $id)
+    public function update(BookUpdateRequest $request, string $id)
     {
-        //
+        $publisherId = $this->selectOrCreatePublisher($request);
+        $existingBook = Book::query()->findOrFail($id);
+        $existingBook->fill(array_merge(
+            $request->only(['title', 'isbn']),
+            [
+                'published_by' => $publisherId
+            ]
+        ));
+        $existingBook->save();
+        return $existingBook;
     }
 
     public function destroy(string $id)
@@ -79,5 +80,19 @@ class BooksController extends Controller
             abort(Response::HTTP_NOT_FOUND);
         }
         return Storage::download('books/' . $book->filename);
+    }
+
+    private function selectOrCreatePublisher(FormRequest $request)
+    {
+        $publisherId = $request->input('publisher.id');
+        if (!isset($publisherId) && $request->has('publisher.name'))
+        {
+            global $publisherId;
+            $newPublisher = Publisher::query()->create([
+                'name' => $request->input('publisher.name')
+            ]);
+            $publisherId = $newPublisher->id;
+        }
+        return $publisherId;
     }
 }

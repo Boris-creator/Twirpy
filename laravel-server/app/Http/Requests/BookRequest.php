@@ -28,7 +28,8 @@ class BookRequest extends FormRequest
             'title' => ['required', 'string'],
             'publishedBy.id' => ['nullable', 'integer'],
             //...
-            'file' => ['required', 'file', 'max:800000', 'mimes:pdf']
+            'file' => ['required', 'file', 'max:800000', 'mimes:pdf'],
+            'isbn' => ['nullable', 'string', 'max:13', 'min:10']
         ];
     }
 

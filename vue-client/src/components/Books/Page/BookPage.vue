@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { Nullable } from '@/types/utils'
-import type { Book } from '@/types/Book'
-import { useQuery } from 'vue-query'
+import type { Book, BookBibliography } from '@/types/Book'
+import { useQuery, useQueryClient } from 'vue-query'
 import { useBooksStore } from '@/stores'
 import { api } from '@/axios'
 import { VITE_API_URL, VITE_STORAGE_URL } from '@/constants'
 import BookPageTemplate from '@/components/Books/Page/BookPageTemplate.vue'
+import { ref } from 'vue'
+import BookForm from '@/components/Books/Form/BookForm.vue'
 
 const props = defineProps({
   id: {
@@ -13,14 +15,26 @@ const props = defineProps({
     required: true
   }
 })
+const QUERY_KEY = 'book'
 
 const { data: book, isLoading } = useQuery<Nullable<Book>>(
-  'book',
+  QUERY_KEY,
   async () => (await api.get(`/books/${props.id}`)).data,
   {
     placeholderData: useBooksStore().findByID(+props.id)
   }
 )
+const bookQueryClient = useQueryClient()
+
+const inEditingMode = ref(false)
+
+const updateBook = (bookData: Partial<BookBibliography>) => {
+  bookQueryClient.setQueryData(QUERY_KEY, {
+    ...bookQueryClient.getQueryData<BookBibliography>(QUERY_KEY),
+    ...bookData
+  })
+  inEditingMode.value = false
+}
 </script>
 <template>
   <!--<template v-if="isLoading">
@@ -35,21 +49,6 @@ const { data: book, isLoading } = useQuery<Nullable<Book>>(
     />
   </template>-->
   <template v-if="book">
-    <!--    <div class="full-width" :class="{ column: $q.screen.sm }">
-      <q-img :src="`${VITE_STORAGE_URL}${book?.titleThumbnail}`" placeholder-src="" class="col-5" />
-      <div class="col-7 q-px-md">
-        <h1>
-          {{ book.title }}
-        </h1>
-        <h3 v-if="book.year">{{ book.year }}</h3>
-        <div class="text-h4">
-          <a v-if="book.accessible" :href="`${VITE_API_URL}/books/${book.id}/download`" download
-            >download</a
-          >
-          <span class="block"> downloaded by {{ book.downloads_count }} users </span>
-        </div>
-      </div>
-    </div>-->
     <book-page-template>
       <template #title>
         {{ book.title }}
@@ -57,7 +56,10 @@ const { data: book, isLoading } = useQuery<Nullable<Book>>(
       <template #image>
         <q-img :src="`${VITE_STORAGE_URL}${book?.titleThumbnail}`" placeholder-src="" />
       </template>
-      <template #year>
+      <template #yearAndPublisher>
+        <span v-if="book.publisher">
+          {{ book.publisher.name }}
+        </span>
         {{ book.year }}
       </template>
       <template #downloads>
@@ -66,6 +68,19 @@ const { data: book, isLoading } = useQuery<Nullable<Book>>(
         >
         <span class="block"> downloaded by {{ book.downloads_count }} users </span>
       </template>
+      <template #actions>
+        <q-btn v-if="book.owned" icon="edit" flat @click="inEditingMode = true"> edit </q-btn>
+      </template>
     </book-page-template>
+    <q-dialog v-model="inEditingMode" no-backdrop-dismiss>
+      <div class="bg-white q-pa-lg flex justify-center book-update__dialog">
+        <book-form :model-value="book" class="full-width" @update:model-value="updateBook" />
+      </div>
+    </q-dialog>
   </template>
 </template>
+<style scoped lang="scss">
+.book-update__dialog {
+  width: 50vw;
+}
+</style>

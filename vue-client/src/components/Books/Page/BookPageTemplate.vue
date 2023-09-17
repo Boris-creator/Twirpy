@@ -14,10 +14,13 @@ const isSm = computed(() => useQuasar().screen.sm || useQuasar().screen.xs)
         <slot name="image" />
       </div>
       <div class="q-px-md">
-        <h3 v-if="$slots.year"><slot name="year" /></h3>
+        <h3 v-if="$slots.yearAndPublisher"><slot name="yearAndPublisher" /></h3>
         <div class="text-h4">
           <slot name="downloads" />
         </div>
+      </div>
+      <div class="q-mt-lg flex justify-center text-h4">
+        <slot name="actions" />
       </div>
     </div>
   </template>
@@ -30,9 +33,12 @@ const isSm = computed(() => useQuasar().screen.sm || useQuasar().screen.xs)
         <h1>
           <slot name="title" />
         </h1>
-        <h3 v-if="$slots.year"><slot name="year" /></h3>
+        <h3 v-if="$slots.yearAndPublisher"><slot name="yearAndPublisher" /></h3>
         <div class="text-h4">
           <slot name="downloads" />
+        </div>
+        <div class="q-mt-lg text-h4">
+          <slot name="actions" />
         </div>
       </div>
     </div>

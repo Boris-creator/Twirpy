@@ -5,7 +5,7 @@ export type BookBibliography = {
   authors: Array<Author>
   title: string
   year: number | string
-  publishedBy: {
+  publisher: {
     id: number | null
     name: string
   }
@@ -16,6 +16,7 @@ export type BookBibliography = {
 
 export type Book = BookBibliography & {
   ownerId: number
+  owned: boolean
   accessible: boolean
   downloads_count: number
 }
