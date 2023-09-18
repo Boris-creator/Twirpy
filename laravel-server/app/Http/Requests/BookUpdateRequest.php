@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Book;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,7 +13,9 @@ class BookUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $bookId = $this->route()->parameters()['book'];
+        $userId = $this->user()->id;
+        return Book::find($bookId)->owner_id == $userId;
     }
 
     /**
