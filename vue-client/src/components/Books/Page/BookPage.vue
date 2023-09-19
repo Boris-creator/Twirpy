@@ -17,6 +17,8 @@ const props = defineProps({
 })
 const QUERY_KEY = 'book'
 
+const isFetchingBuy = ref(false)
+
 const { data: book, isLoading } = useQuery<Nullable<Book>>(
   QUERY_KEY,
   async () => (await api.get(`/books/${props.id}`)).data,
@@ -34,6 +36,18 @@ const updateBook = (bookData: Partial<BookBibliography>) => {
     ...bookData
   })
   inEditingMode.value = false
+}
+
+const buyBook = () => {
+  isFetchingBuy.value = true
+  api
+    .post(`/books/${props.id}/buy`)
+    .then((response) => {
+      updateBook(response.data)
+    })
+    .finally(() => {
+      isFetchingBuy.value = false
+    })
 }
 </script>
 <template>
@@ -65,6 +79,9 @@ const updateBook = (bookData: Partial<BookBibliography>) => {
       <template #downloads>
         <a v-if="book.accessible" :href="`${VITE_API_URL}/books/${book.id}/download`" download
           >download</a
+        >
+        <q-btn v-else :disable="isFetchingBuy" :loading="isFetchingBuy" flat @click="buyBook"
+          >buy ({{ book.price }})</q-btn
         >
         <span class="block"> downloaded by {{ book.downloads_count }} users </span>
       </template>

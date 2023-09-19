@@ -16,6 +16,10 @@ class Book extends Model
 
     protected $casts = ['published_by' => 'integer'];
 
+    protected $attributes = [
+        'price' => 300
+    ];
+
     public function publisher(): HasOne
     {
         return $this->HasOne(Publisher::class, 'id', 'published_by');

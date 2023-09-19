@@ -45,6 +45,10 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $attributes = [
+        'balance' => 30000
+    ];
+
     public function uploadedBooks(): HasMany {
         return $this->hasMany(Book::class, 'owner_id', 'id');
     }

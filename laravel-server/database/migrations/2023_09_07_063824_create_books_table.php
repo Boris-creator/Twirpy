@@ -21,10 +21,12 @@ return new class extends Migration
             $table->string('volume')->nullable();
             $table->string('annotation')->nullable();
             $table->string('isbn')->nullable();
+            $table->string('pages')->nullable();
             $table->unsignedBigInteger('published_by')->nullable();
             $table->string('filename')->nullable();
             $table->string('hash_sum')->nullable();
             $table->unsignedBigInteger('owner_id')->nullable();
+            $table->double('price');
             $table->foreign('owner_id')->references('id')->on(app(Models\User::class)->getTable())->onDelete('cascade');
             $table->foreign('published_by')->references('id')->on(app(Models\Publisher::class)->getTable())->onDelete('cascade');
         });

@@ -20,11 +20,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::namespace('App\Http\Controllers\Api')->group(function () {
-    Route::apiResource('books', 'BooksController')->middleware('auth:sanctum');
+    Route::apiResource('books', 'BooksController');
     Route::get('books/{id}/download', [Api\BooksController::class, 'download'])->middleware(
-        'auth:sanctum',
         Middleware\EnsureBookIsAccessible::class
     );
 
-    Route::apiResource('publishers', 'PublisherController')->middleware('auth:sanctum');
-});
+    Route::post('books/{id}/buy', [Api\BargainController::class, 'buy'])->middleware(
+        Middleware\EnsureBookCanBeBought::class
+    );
+
+    Route::apiResource('publishers', 'PublisherController');
+})->middleware('auth:sanctum');
