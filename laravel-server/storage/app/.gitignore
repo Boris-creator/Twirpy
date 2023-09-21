@@ -1,4 +1,6 @@
-*
-!public/
-!books/
+*/*
+*/*/*
+!public/thumbnails
+!public/thumbnails/.gitkeep
+!books/.gitkeep
 !.gitignore

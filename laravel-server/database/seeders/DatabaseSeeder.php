@@ -18,7 +18,11 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test',
             'email' => 'test@gmail.com',
             'password' => bcrypt('qwerty'),
-            //'balance' => config('constants.START_UP_BALANCE')
+            'balance' => config('constants.USER_BALANCE')
+        ]);
+
+        $this->call([
+            PublisherSeeder::class
         ]);
     }
 }
