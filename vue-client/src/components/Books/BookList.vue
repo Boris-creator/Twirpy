@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onBeforeMount } from 'vue'
-import { api } from '@/axios'
+import { useResource } from '@/axios'
 import { useBooksStore } from '@/stores'
 import { VITE_STORAGE_URL } from '@/constants'
+import type { Book } from '@/types/Book'
 
 const store = useBooksStore()
 const books = computed({
@@ -15,17 +16,16 @@ const books = computed({
 })
 
 onBeforeMount(async () => {
-  const bookResponse = await api.get('/books')
+  const bookResponse = await useResource<Book>('books').search()
   books.value = bookResponse.data
-  //await api.get('/books/2/download')
 })
 </script>
 <template>
   <div class="full-width">
     <q-card v-for="book of books" :key="book.id" class="full-width q-mt-md">
       <q-card-section horizontal>
-        <q-img :src="`${VITE_STORAGE_URL}${book.titleThumbnail}`" />
-        <q-card-section class="col-7">
+        <q-img :src="`${VITE_STORAGE_URL}${book.titleThumbnail}`" class="col-4 col-md-3" />
+        <q-card-section class="col-6 col-md-7">
           <router-link :to="`/books/${book.id}`">
             <h4>
               {{ book.title }}

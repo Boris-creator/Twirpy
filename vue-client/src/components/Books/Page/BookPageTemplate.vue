@@ -26,7 +26,7 @@ const isSm = computed(() => useQuasar().screen.sm || useQuasar().screen.xs)
   </template>
   <template v-else>
     <div class="full-width row">
-      <div class="col-5">
+      <div class="col-5 col-lg-3">
         <slot name="image" />
       </div>
       <div class="col-7 q-px-md">

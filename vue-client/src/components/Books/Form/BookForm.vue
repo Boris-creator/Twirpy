@@ -2,7 +2,7 @@
 import { computed, onBeforeMount, type PropType, ref } from 'vue'
 import type { Book, BookBibliography } from '@/types/Book'
 import type { Nullable, NullableFields } from '@/types/utils'
-import { api } from '@/axios'
+import { api, useResource } from '@/axios'
 import { useForm } from 'vee-validate'
 import * as zod from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -19,7 +19,7 @@ const props = defineProps({
   }
 })
 const emits = defineEmits<{
-  (e: 'update:modelValue', value: BookBibliography): void
+  (e: 'update:modelValue', value: Book): void
 }>()
 
 const inUpdatingMode = computed(() => !!props.modelValue?.id)
@@ -94,11 +94,11 @@ const fetchPublishers = (query: string | null) => {
     })
 }
 
+const { update } = useResource<BookBibliography>('books')
 const uploadBook = handleSubmit(async (values) => {
   new Promise<AxiosResponse>((resolve, reject) => {
     if (inUpdatingMode.value) {
-      api
-        .put(`/books/${props.modelValue?.id}`, values)
+      update(props.modelValue?.id as number, values)
         .then(resolve)
         .catch(reject)
     } else {

@@ -31,7 +31,7 @@ const router = createRouter({
       {
         path: 'add',
         name: 'addBook',
-        component: () => import('@/components/Books/Form/BookForm.vue')
+        component: () => import('@/components/Books/AddBookPage.vue')
       }
     ])
   ]

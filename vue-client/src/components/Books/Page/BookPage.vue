@@ -3,7 +3,7 @@ import type { Nullable } from '@/types/utils'
 import type { Book, BookBibliography } from '@/types/Book'
 import { useQuery, useQueryClient } from 'vue-query'
 import { useBooksStore } from '@/stores'
-import { api } from '@/axios'
+import { api, useResource } from '@/axios'
 import { VITE_API_URL, VITE_STORAGE_URL } from '@/constants'
 import BookPageTemplate from '@/components/Books/Page/BookPageTemplate.vue'
 import { ref } from 'vue'
@@ -21,7 +21,7 @@ const isFetchingBuy = ref(false)
 
 const { data: book, isLoading } = useQuery<Nullable<Book>>(
   QUERY_KEY,
-  async () => (await api.get(`/books/${props.id}`)).data,
+  async () => (await useResource<Book>('books').show(props.id)).data,
   {
     placeholderData: useBooksStore().findByID(+props.id)
   }
