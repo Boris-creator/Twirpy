@@ -8,6 +8,7 @@ import { VITE_API_URL, VITE_STORAGE_URL } from '@/constants'
 import BookPageTemplate from '@/components/Books/Page/BookPageTemplate.vue'
 import { ref } from 'vue'
 import BookForm from '@/components/Books/Form/BookForm.vue'
+import CommentsThread from '@/components/Comments/CommentsThread.vue'
 
 const props = defineProps({
   id: {
@@ -19,7 +20,7 @@ const QUERY_KEY = 'book'
 
 const isFetchingBuy = ref(false)
 
-const { data: book, isLoading } = useQuery<Nullable<Book>>(
+const { data: book } = useQuery<Nullable<Book>>(
   QUERY_KEY,
   async () => (await useResource<Book>('books').show(props.id)).data,
   {
@@ -87,6 +88,9 @@ const buyBook = () => {
       </template>
       <template #actions>
         <q-btn v-if="book.owned" icon="edit" flat @click="inEditingMode = true"> edit </q-btn>
+      </template>
+      <template #comments>
+        <comments-thread :subject="book" />
       </template>
     </book-page-template>
     <q-dialog v-model="inEditingMode" no-backdrop-dismiss>

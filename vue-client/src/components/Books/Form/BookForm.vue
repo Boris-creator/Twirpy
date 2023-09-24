@@ -6,8 +6,8 @@ import { api, useResource } from '@/axios'
 import { useForm } from 'vee-validate'
 import * as zod from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
-import FormInput from '@/components/Books/Form/FormInput.vue'
-import AutoSuggest from '@/components/Books/Form/AutoSuggest.vue'
+import FormInput from '@/components/common/FormInput.vue'
+import AutoSuggest from '@/components/common/AutoSuggest.vue'
 import type { AxiosResponse } from 'axios'
 
 const MAX_FILE_SIZE = 800 * 10 ** 5

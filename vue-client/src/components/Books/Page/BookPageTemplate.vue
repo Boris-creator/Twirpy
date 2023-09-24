@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const isSm = computed(() => useQuasar().screen.sm || useQuasar().screen.xs)
+
+const isSliderOpen = ref(false)
 </script>
 <template>
   <template v-if="isSm">
@@ -41,6 +43,10 @@ const isSm = computed(() => useQuasar().screen.sm || useQuasar().screen.xs)
           <slot name="actions" />
         </div>
       </div>
+      <q-drawer v-model="isSliderOpen" overlay side="right" :width="500">
+        <slot name="comments" v-if="isSliderOpen" />
+      </q-drawer>
     </div>
   </template>
+  <q-btn label="comments" @click="isSliderOpen = !isSliderOpen" />
 </template>
