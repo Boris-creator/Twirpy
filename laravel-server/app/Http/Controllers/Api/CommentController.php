@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EnsureCanManageComment;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,6 +11,15 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(EnsureCanManageComment::class)
+            ->only([
+                'destroy',
+                'update',
+            ]);
+    }
+
     /**
      * Display a listing of the resource.
      */
