@@ -21,8 +21,8 @@ const props = defineProps({
   }
 })
 
-const onInput = (v: string | null) => {
-  if (props.modelModifiers?.noEmptyString) {
+const onInput = (v: string | number | null) => {
+  if (typeof v === 'string' && props.modelModifiers?.noEmptyString) {
     return v?.trim().length ? v : null
   }
   return v as unknown
@@ -33,8 +33,7 @@ const onInput = (v: string | null) => {
     v-bind="$attrs"
     :model-value="value.value"
     :error="!!errors"
-    :error-message="errors"
-    label="Book title"
+    :error-message="errors ?? ''"
     bottom-slots
     outlined
     @update:model-value="value.onInput(onInput($event) as Event)"

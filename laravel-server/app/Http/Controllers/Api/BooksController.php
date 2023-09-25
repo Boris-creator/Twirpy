@@ -25,7 +25,7 @@ class BooksController extends Controller
         $userId = $request->user()->id;
 
         $publisherId = $this->selectOrCreatePublisher($request);
-        $newBook = Book::query()->create(array_merge(
+        $newBook = Book::create(array_merge(
             $request->only(['title', 'isbn']),
             [
                 'owner_id' => $userId,

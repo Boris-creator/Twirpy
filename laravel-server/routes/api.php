@@ -29,5 +29,6 @@ Route::namespace('App\Http\Controllers\Api')->group(function () {
         Middleware\EnsureBookCanBeBought::class
     );
 
-    Route::apiResource('publishers', 'PublisherController');
+    Route::apiResource('publishers', Api\PublisherController::class);
+    Route::apiResource('comments', Api\CommentController::class);
 })->middleware('auth:sanctum');

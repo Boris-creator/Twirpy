@@ -35,4 +35,9 @@ onBeforeMount(async () => {
       </q-card-section>
     </q-card>
   </div>
+  <q-page-sticky position="bottom-right" :offset="[15, 15]">
+    <router-link to="/books/add">
+      <q-btn fab icon="add" color="black" />
+    </router-link>
+  </q-page-sticky>
 </template>

@@ -19,7 +19,8 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   rules: {
-    'no-unused-vars': "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
     quotes: ['warn', 'single'],
     'vue/block-order': [
       'error',
