@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Api\DTO\BookFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,9 +22,34 @@ class Book extends Model
         'price' => 300
     ];
 
+    public static function search(BookFilter $filter)
+    {
+        return self::when($filter->accessible, function (Builder $query)
+        {
+            $query->whereHas('downloads', function (Builder $user)
+            {
+                $user->where('users.id', auth()->id());
+            });
+        })
+            ->when($filter->owned, function (Builder $query)
+            {
+                $query->whereHas('owner', function (Builder $user)
+                {
+                    $user->where('users.id', '=', auth()->id());
+                });
+            }
+            )
+            ->get();
+    }
+
     public function publisher(): HasOne
     {
         return $this->HasOne(Publisher::class, 'id', 'published_by');
+    }
+
+    public function owner(): HasOne
+    {
+        return $this->HasOne(User::class, 'id', 'owner_id');
     }
     public function downloads(): BelongsToMany
     {

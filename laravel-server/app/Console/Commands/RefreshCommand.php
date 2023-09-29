@@ -30,8 +30,7 @@ class RefreshCommand extends Command
     {
         $executionStart = now();
 
-        Artisan::call('migrate:refresh');
-        Artisan::call('db:seed');
+        Artisan::call('migrate:refresh --seed');
         File::cleanDirectory(storage_path() . '/app/books');
         File::cleanDirectory(storage_path() . '/app/public/thumbnails');
         File::put(storage_path() . '/app/books/.gitkeep', '');

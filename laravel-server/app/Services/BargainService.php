@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Notifications\BookBought;
+use Illuminate\Support\Facades\DB;
 
 class BargainService
 {
@@ -22,12 +24,17 @@ class BargainService
     {
         $user = User::find($userId);
         $book = Book::find($bookId);
-        $user->balance -= $book->price;
-        $user->accessibleBooks()->attach($bookId);
-        $user->save();
-        $owner = User::find($book->owner_id);
-        $owner->balance += $book->price;
-        $owner->save();
+        DB::transaction(function () use ($user, $book, $bookId)
+        {
+            $user->accessibleBooks()->attach($bookId);
+            $user->balance -= $book->price;
+            $user->save();
+            $owner = User::find($book->owner_id);
+            $owner->balance += $book->price;
+            $owner->save();
+            $owner->notify(new BookBought($user, $book));
+        });
+
         return $book;
     }
 }

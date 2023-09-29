@@ -52,17 +52,6 @@ const buyBook = () => {
 }
 </script>
 <template>
-  <!--<template v-if="isLoading">
-    <q-circular-progress
-      indeterminate
-      size="15vw"
-      :thickness="0.4"
-      color="blue"
-      center-color="yellow"
-      track-color="grey-3"
-      class="q-ma-md"
-    />
-  </template>-->
   <template v-if="book">
     <book-page-template>
       <template #title>

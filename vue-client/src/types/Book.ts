@@ -1,3 +1,5 @@
+import type { NullableFields } from '@/types/utils'
+
 export type Author = {
   name: string
 }
@@ -20,3 +22,5 @@ export type Book = BookBibliography & {
   accessible: boolean
   downloads_count: number
 }
+
+export type BookFilter = Partial<NullableFields<Book>>

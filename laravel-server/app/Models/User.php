@@ -55,6 +55,6 @@ class User extends Authenticatable
 
     public function accessibleBooks(): BelongsToMany
     {
-        return $this->BelongsToMany(Book::class, 'accessible_books');
+        return $this->BelongsToMany(Book::class, 'accessible_books')->withTimestamps();
     }
 }

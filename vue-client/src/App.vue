@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount } from 'vue'
 import { api } from '@/axios'
+import StickyMenu from '@/components/StickyMenu.vue'
 
 onBeforeMount(async () => {
   await api.post('/login', {
@@ -16,6 +17,7 @@ onBeforeMount(async () => {
       <q-page class="flex items-center justify-center">
         <router-view />
       </q-page>
+      <sticky-menu />
     </q-page-container>
   </q-layout>
 </template>

@@ -18,7 +18,8 @@ class Book extends JsonResource
         $userId = $request->user()->id;
         $book = parent::toArray($request);
         return array_merge($book, [
-            'accessible' => User::query()->find($userId)->accessibleBooks->contains($book['id']),
+            'publisher' => $this->publisher,
+            'accessible' => User::find($userId)->accessibleBooks->contains($book['id']),
             'owned' => $book['owner_id'] == $userId,
             'titleThumbnail' => '/thumbnails/' . $book['id'] . '-000.jpg'
         ]);
