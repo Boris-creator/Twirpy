@@ -10,5 +10,16 @@ function onCreate(book: Book) {
 }
 </script>
 <template>
-  <book-form @update:model-value="onCreate" />
+  <div class="form__wrapper">
+    <book-form @update:model-value="onCreate" />
+  </div>
 </template>
+<style scoped lang="scss">
+.form__wrapper {
+  width: 50vw;
+  @media (max-width: 576px) {
+    width: 100vw;
+  }
+  max-width: 400px;
+}
+</style>

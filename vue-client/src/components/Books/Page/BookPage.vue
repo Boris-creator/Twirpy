@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import type { Nullable } from '@/types/utils'
-import type { Book, BookBibliography } from '@/types/Book'
+import { ref } from 'vue'
 import { useQuery, useQueryClient } from 'vue-query'
-import { useBooksStore } from '@/stores'
+import { useRouter } from 'vue-router'
 import { api, useResource } from '@/axios'
+import { CHUNKS } from '@/router'
+import { useBooksStore } from '@/stores'
 import { VITE_API_URL, VITE_STORAGE_URL } from '@/constants'
 import BookPageTemplate from '@/components/Books/Page/BookPageTemplate.vue'
-import { ref } from 'vue'
 import BookForm from '@/components/Books/Form/BookForm.vue'
 import CommentsThread from '@/components/Comments/CommentsThread.vue'
+import type { AxiosError } from 'axios'
+import type { Nullable } from '@/types/utils'
+import type { Book, BookBibliography } from '@/types/Book'
+
+const router = useRouter()
 
 const props = defineProps({
   id: {
@@ -24,7 +29,13 @@ const { data: book } = useQuery<Nullable<Book>>(
   QUERY_KEY,
   async () => (await useResource<Book>('books').show(props.id)).data,
   {
-    placeholderData: useBooksStore().findByID(+props.id)
+    placeholderData: useBooksStore().findByID(+props.id),
+    onError(error: AxiosError) {
+      if (error.response?.status === 404) {
+        router.replace(CHUNKS.notFound)
+      }
+    },
+    retry: 1
   }
 )
 const bookQueryClient = useQueryClient()

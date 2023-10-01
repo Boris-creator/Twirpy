@@ -13,12 +13,14 @@ export const ROUTE_NAMES = {
   home: 'home',
   books: 'books',
   book: 'book',
-  addBook: 'addBook'
+  addBook: 'addBook',
+  notFound: 'notFound'
 }
 export const CHUNKS = {
   books: '/books',
   book: ':id',
-  addBook: 'add'
+  addBook: 'add',
+  notFound: '/not-found'
 }
 
 const router = createRouter({
@@ -46,7 +48,9 @@ const router = createRouter({
         name: ROUTE_NAMES.addBook,
         component: () => import('@/components/Books/AddBookPage.vue')
       }
-    ])
+    ]),
+    { path: CHUNKS.notFound, name: ROUTE_NAMES.notFound, component: HomeView },
+    { path: '/(.*)*', component: HomeView }
   ]
 })
 

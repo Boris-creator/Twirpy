@@ -121,7 +121,7 @@ const isDisplayAnswers = computed(() => !!searchFilter.value.answerTo)
       :text="[comment.text]"
       :sent="comment.owned"
       :name="comment.author.name"
-      size="5"
+      size="11"
     >
       <template #stamp>
         <q-card-actions align="right">
