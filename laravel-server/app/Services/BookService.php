@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Events\BookUploaded;
+use App\Jobs\ProcessUploadedBook;
 use App\Models\Book;
 use App\Models\Publisher;
 use Illuminate\Foundation\Http\FormRequest;
@@ -22,7 +23,8 @@ class BookService
         $newBook->hash_sum = sha1_file(storage_path() . '/app/books/' . $file_name);
 
         $newBook->save();
-        \event(new BookUploaded($file_name, $newBook->id));
+        \event(new BookUploaded($file_name, $newBook->id)); //TODO: separate to a job too.
+        ProcessUploadedBook::dispatchIf(array_key_exists('isbn', $newBook->toArray()), $newBook);
         return $newBook;
     }
 
