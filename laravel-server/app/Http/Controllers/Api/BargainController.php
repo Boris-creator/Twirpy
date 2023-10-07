@@ -13,6 +13,7 @@ class BargainController extends Controller
     public function buy(Request $request, string $id)
     {
         $book = BookBargainService::buy($request->user()->id, $id);
+
         return response()->json((new Book($book))->toArray($request), ResponseAlias::HTTP_OK);
     }
 }

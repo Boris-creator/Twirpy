@@ -15,7 +15,7 @@ class CommentResource extends JsonResource
     public function toArray(Request $request): array
     {
         $comment = parent::toArray($request);
-        if (!isset($comment['answers_count'])) {
+        if (! isset($comment['answers_count'])) {
             $comment['answers_count'] = 0;
         }
 
@@ -23,7 +23,7 @@ class CommentResource extends JsonResource
             'author' => $this->author,
             'answerTo' => $this->answerTo,
             'edited' => $this->edited,
-            'owned' => $comment['user_id'] == auth()->id()
+            'owned' => $comment['user_id'] == auth()->id(),
         ]);
     }
 }

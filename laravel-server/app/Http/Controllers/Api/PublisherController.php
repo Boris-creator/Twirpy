@@ -16,7 +16,8 @@ class PublisherController extends Controller
         $defaultLimit = 10;
         $search = \request()->has('search') ? \request()->input('search') : '';
         $limit = \request()->has('search') ? $defaultLimit : null;
-        return Publisher::query()->where('name', 'LIKE', '%' . $search . '%')->take($limit)->get();
+
+        return Publisher::query()->where('name', 'LIKE', '%'.$search.'%')->take($limit)->get();
     }
 
     /**

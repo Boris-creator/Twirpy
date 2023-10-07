@@ -12,13 +12,12 @@ class EnsureCanManageComment
     /**
      * Handle an incoming request.
      *
-     * @param Closure(Request): (Response) $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         $commentId = $request->route()->parameter('comment');
-        if (!$commentId)
-        {
+        if (! $commentId) {
             abort(Response::HTTP_BAD_REQUEST);
         }
         $comment = Comment::findOrFail($commentId);

@@ -14,17 +14,18 @@ class BookService
 {
     public static function upload(Book $newBook, UploadedFile $file)
     {
-        $file_name = $newBook->id . '.' . $file->getClientOriginalExtension();
+        $file_name = $newBook->id.'.'.$file->getClientOriginalExtension();
         $newBook->filename = $file_name;
 
         //$file->storeAs('books', $file_name); //#1
-        Storage::disk('local')->put('books' . DIRECTORY_SEPARATOR . $file_name, file_get_contents($file)); //#2
+        Storage::disk('local')->put('books'.DIRECTORY_SEPARATOR.$file_name, file_get_contents($file)); //#2
 
-        $newBook->hash_sum = sha1_file(storage_path() . '/app/books/' . $file_name);
+        $newBook->hash_sum = sha1_file(storage_path().'/app/books/'.$file_name);
 
         $newBook->save();
         \event(new BookUploaded($file_name, $newBook->id)); //TODO: separate to a job too.
         ProcessUploadedBook::dispatchIf(array_key_exists('isbn', $newBook->toArray()), $newBook);
+
         return $newBook;
     }
 
@@ -39,8 +40,7 @@ class BookService
         }
         curl_close($fetch);
         $book_data = json_decode($res, true);
-        if (isset($book_data['publish_date']) && !isset($book->year))
-        {
+        if (isset($book_data['publish_date']) && ! isset($book->year)) {
             $book->year = $book_data['publish_date'];
             $book->save();
         }
@@ -49,14 +49,14 @@ class BookService
     public static function selectOrCreatePublisher(FormRequest $request)
     {
         $publisherId = $request->input('publisher.id');
-        if (!isset($publisherId) && $request->has('publisher.name'))
-        {
+        if (! isset($publisherId) && $request->has('publisher.name')) {
             global $publisherId;
             $newPublisher = Publisher::query()->create([
-                'name' => $request->input('publisher.name')
+                'name' => $request->input('publisher.name'),
             ]);
             $publisherId = $newPublisher->id;
         }
+
         return $publisherId;
     }
 }

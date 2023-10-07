@@ -10,6 +10,7 @@ abstract class BargainService
     public static function hasEnoughBalance(int $userId, float $price): bool
     {
         $user = User::find($userId);
+
         return $user->balance >= $price;
     }
 
@@ -21,5 +22,5 @@ abstract class BargainService
         $seller->save();
     }
 
-    public abstract static function canBeBought(User $buyer, Book $resource): bool;
+    abstract public static function canBeBought(User $buyer, Book $resource): bool;
 }

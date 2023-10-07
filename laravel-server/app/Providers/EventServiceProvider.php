@@ -21,8 +21,8 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         BookUploaded::class => [
-            BookUploadSubscription::class
-        ]
+            BookUploadSubscription::class,
+        ],
     ];
 
     /**

@@ -5,7 +5,6 @@ namespace App\Notifications;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
 class BookBought extends Notification
@@ -41,7 +40,7 @@ class BookBought extends Notification
         return [
             'user_id' => $this->user->id,
             'book_id' => $this->book->id,
-            'price' => $this->book->price
+            'price' => $this->book->price,
         ];
     }
 }

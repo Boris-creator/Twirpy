@@ -17,11 +17,12 @@ class Book extends JsonResource
     {
         $userId = $request->user()->id;
         $book = parent::toArray($request);
+
         return array_merge($book, [
             'publisher' => $this->publisher,
             'accessible' => User::find($userId)->accessibleBooks->contains($book['id']),
             'owned' => $book['owner_id'] == $userId,
-            'titleThumbnail' => '/thumbnails/' . $book['id'] . '-000.jpg'
+            'titleThumbnail' => '/thumbnails/'.$book['id'].'-000.jpg',
         ]);
     }
 }

@@ -11,8 +11,7 @@ class OwnershipBargainService extends BargainService
 {
     public static function closeBargain(BargainOwnership $bargain): void
     {
-        DB::transaction(function () use($bargain)
-        {
+        DB::transaction(function () use ($bargain) {
             $book = $bargain->book;
             $book->owner()->save($bargain->buyer);
             $bargain->update(['done' => true]);
@@ -22,6 +21,6 @@ class OwnershipBargainService extends BargainService
 
     public static function canBeBought(User $buyer, Book $resource): bool
     {
-        return $resource->owner()->id !== $buyer->id;
+        return $buyer->id !== $resource->owner()->id;
     }
 }

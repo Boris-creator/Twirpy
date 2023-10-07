@@ -16,12 +16,13 @@ class BooksController extends Controller
 {
     public function index()
     {
-       $filter = new BookFilter();
-       $filter->accessible = request()->boolean('accessible');
-       $filter->owned = request()->boolean('owned');
+        $filter = new BookFilter();
+        $filter->accessible = request()->boolean('accessible');
+        $filter->owned = request()->boolean('owned');
 
-       $books = Book::search($filter);
-       return \App\Http\Resources\Book::collection($books)->toArray(\request());
+        $books = Book::search($filter);
+
+        return \App\Http\Resources\Book::collection($books)->toArray(\request());
     }
 
     public function store(BookRequest $request)
@@ -33,12 +34,13 @@ class BooksController extends Controller
             $request->only(['title', 'isbn']),
             [
                 'owner_id' => $userId,
-                'published_by' => $publisherId
+                'published_by' => $publisherId,
             ]
         ));
         User::query()->find($userId)->accessibleBooks()->attach($newBook->id);
 
         $file = $request->file('file');
+
         return BookService::upload($newBook, $file);
     }
 
@@ -54,10 +56,11 @@ class BooksController extends Controller
         $existingBook->fill(array_merge(
             $request->only(['title', 'isbn']),
             [
-                'published_by' => $publisherId
+                'published_by' => $publisherId,
             ]
         ));
         $existingBook->save();
+
         return (new \App\Http\Resources\Book($existingBook))->toArray($request);
     }
 
@@ -69,10 +72,10 @@ class BooksController extends Controller
     public function download(string $id)
     {
         $book = Book::query()->findOrFail($id);
-        if (!isset($book->filename))
-        {
+        if (! isset($book->filename)) {
             abort(Response::HTTP_NOT_FOUND);
         }
-        return Storage::download('books/' . $book->filename);
+
+        return Storage::download('books/'.$book->filename);
     }
 }

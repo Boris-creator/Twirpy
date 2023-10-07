@@ -4,8 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -46,10 +46,11 @@ class User extends Authenticatable
     ];
 
     protected $attributes = [
-        'balance' => 30000
+        'balance' => 30000,
     ];
 
-    public function uploadedBooks(): HasMany {
+    public function uploadedBooks(): HasMany
+    {
         return $this->hasMany(Book::class, 'owner_id', 'id');
     }
 

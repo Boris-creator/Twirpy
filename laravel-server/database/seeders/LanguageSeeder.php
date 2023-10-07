@@ -14,11 +14,11 @@ class LanguageSeeder extends Seeder
     {
         Language::factory()->createMany([
             [
-                'name' => 'en'
+                'name' => 'en',
             ],
             [
-                'name' => 'uk'
-            ]
+                'name' => 'uk',
+            ],
         ]);
     }
 }

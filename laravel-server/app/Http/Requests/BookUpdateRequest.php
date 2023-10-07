@@ -15,7 +15,8 @@ class BookUpdateRequest extends FormRequest
     {
         $bookId = $this->route()->parameters()['book'];
         $userId = $this->user()->id;
-        return Book::find($bookId)->owner_id == $userId;
+
+        return $userId == Book::find($bookId)->owner_id;
     }
 
     /**
@@ -28,7 +29,7 @@ class BookUpdateRequest extends FormRequest
         return [
             'title' => ['nullable', 'string'],
             'publishedBy.id' => ['nullable', 'integer'],
-            'isbn' => ['nullable', 'string']
+            'isbn' => ['nullable', 'string'],
         ];
     }
 }

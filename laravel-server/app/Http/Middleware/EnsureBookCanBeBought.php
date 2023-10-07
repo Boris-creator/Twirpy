@@ -14,7 +14,7 @@ class EnsureBookCanBeBought
     /**
      * Handle an incoming request.
      *
-     * @param Closure(Request): (Response) $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -22,12 +22,13 @@ class EnsureBookCanBeBought
         $bookId = $request->route()->parameters['id'];
         $book = Book::findOrFail($bookId);
 
-        if (!BookBargainService::canBeBought(User::findOrFail($userId), $book)) {
+        if (! BookBargainService::canBeBought(User::findOrFail($userId), $book)) {
             abort(Response::HTTP_BAD_REQUEST, 'already bought');
         }
-        if (!BookBargainService::hasEnoughBalance($userId, $book->price)) {
+        if (! BookBargainService::hasEnoughBalance($userId, $book->price)) {
             abort(Response::HTTP_BAD_REQUEST, 'you are too poor');
         }
+
         return $next($request);
     }
 }

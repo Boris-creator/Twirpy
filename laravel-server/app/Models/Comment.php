@@ -20,10 +20,12 @@ class Comment extends Model
     {
         return $this->BelongsTo(Comment::class, 'answer_to', 'id');
     }
+
     public function answers(): HasMany
     {
         return $this->HasMany(Comment::class, 'answer_to', 'id');
     }
+
     public function author(): HasOne
     {
         return $this->HasOne(User::class, 'id', 'user_id')->select(['id', 'name']);
@@ -39,6 +41,7 @@ class Comment extends Model
     {
         return $this->created_at != $this->updated_at;
     }
+
     public function getRelatedAttribute()
     {
         return $this->flatTreeViewToArray();
@@ -49,8 +52,7 @@ class Comment extends Model
         return self::query()
             ->with('author')
             ->withCount('answers')
-            ->with(['answerTo' => function($query)
-            {
+            ->with(['answerTo' => function ($query) {
                 return $query->with('author')->select(['id', 'text', 'user_id']);
             }]);
     }
@@ -62,6 +64,7 @@ class Comment extends Model
             $answers[] = $comment;
             $answers = array_merge($answers, $comment->flatTreeViewToArray());
         }
+
         return $answers;
     }
 }

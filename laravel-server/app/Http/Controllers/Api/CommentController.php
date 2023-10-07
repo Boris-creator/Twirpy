@@ -27,13 +27,15 @@ class CommentController extends Controller
     {
         if (\request()->has('answerTo')) {
             $comments = Comment::find(\request()->input('answerTo'))->related;
+
             return CommentResource::collection($comments)->toArray(\request());
         }
         $comments = Comment::withRelations()
             ->when(\request()->has('bookId'), function (Builder $query) {
-               return $query->where(['book_id' => \request()->input('bookId')]);
+                return $query->where(['book_id' => \request()->input('bookId')]);
             })
             ->get();
+
         return CommentResource::collection($comments)->toArray(\request());
     }
 
@@ -65,9 +67,10 @@ class CommentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $comment =  Comment::findOrFail($id);
+        $comment = Comment::findOrFail($id);
         $comment->fill($request->only(['text']));
         $comment->save();
+
         return $comment;
     }
 

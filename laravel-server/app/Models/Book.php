@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Book extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
     protected $hidden = ['hash_sum'];
@@ -19,22 +20,18 @@ class Book extends Model
     protected $casts = ['published_by' => 'integer'];
 
     protected $attributes = [
-        'price' => 300
+        'price' => 300,
     ];
 
     public static function search(BookFilter $filter)
     {
-        return self::when($filter->accessible, function (Builder $query)
-        {
-            $query->whereHas('downloads', function (Builder $user)
-            {
+        return self::when($filter->accessible, function (Builder $query) {
+            $query->whereHas('downloads', function (Builder $user) {
                 $user->where('users.id', auth()->id());
             });
         })
-            ->when($filter->owned, function (Builder $query)
-            {
-                $query->whereHas('owner', function (Builder $user)
-                {
+            ->when($filter->owned, function (Builder $query) {
+                $query->whereHas('owner', function (Builder $user) {
                     $user->where('users.id', '=', auth()->id());
                 });
             }
@@ -51,6 +48,7 @@ class Book extends Model
     {
         return $this->HasOne(User::class, 'id', 'owner_id');
     }
+
     public function downloads(): BelongsToMany
     {
         return $this->BelongsToMany(User::class, 'accessible_books', 'book_id');

@@ -17,19 +17,19 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Test',
                 'email' => 'test@gmail.com',
                 'password' => bcrypt('qwerty'),
-                'balance' => config('constants.USER_BALANCE')
+                'balance' => config('constants.USER_BALANCE'),
             ],
             [
                 'name' => 'Test 2',
                 'email' => 'test2@gmail.com',
                 'password' => bcrypt('qwerty'),
-                'balance' => config('constants.USER_BALANCE')
-            ]
+                'balance' => config('constants.USER_BALANCE'),
+            ],
         ]);
 
         $this->call([
             PublisherSeeder::class,
-            LanguageSeeder::class
+            LanguageSeeder::class,
         ]);
     }
 }

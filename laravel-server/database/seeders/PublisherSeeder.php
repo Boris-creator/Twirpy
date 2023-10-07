@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Publisher;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PublisherSeeder extends Seeder
@@ -15,11 +14,11 @@ class PublisherSeeder extends Seeder
     {
         Publisher::factory()->createMany([
             [
-                'name' => 'O\'Reilly'
+                'name' => 'O\'Reilly',
             ],
             [
-                'name' => 'McMillan & Co'
-            ]
+                'name' => 'McMillan & Co',
+            ],
         ]);
     }
 }
