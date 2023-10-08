@@ -10,7 +10,7 @@ const props = defineProps({
   }
 })
 const emits = defineEmits<{
-  (e: 'update:modelValue', value: BookFilter): void
+  'update:modelValue': [value: BookFilter]
 }>()
 
 const filter = ref<BookFilter>(props.modelValue)

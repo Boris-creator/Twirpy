@@ -3,10 +3,9 @@ import type { PropType } from 'vue'
 import type { Nullable, NullableFields } from '@/types/utils'
 import type { Book } from '@/types/Book'
 import type { Comment } from '@/types/Comment'
-import { useForm } from 'vee-validate'
+import { useField, useForm } from 'vee-validate'
 import * as zod from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
-import FormInput from '@/components/common/FormInput.vue'
 import { computed, watch } from 'vue'
 
 const props = defineProps({
@@ -28,8 +27,8 @@ const props = defineProps({
   }
 })
 const emits = defineEmits<{
-  (e: 'update:modelValue', value: Comment): void
-  (e: 'deselect'): void
+  'update:modelValue': [value: NullableFields<Comment>]
+  deselect: []
 }>()
 
 const defaultComment = () => ({
@@ -47,18 +46,18 @@ const commentToAnswer = computed<Nullable<Comment>>({
   }
 })
 
-const { values, errors, handleSubmit, setValues, resetForm, defineInputBinds } = useForm<
-  NullableFields<Comment>
->({
-  validationSchema: toTypedSchema(
-    zod.object({
-      text: zod.string().nonempty().min(3)
-    })
-  ),
+const form = useForm<NullableFields<Comment>>({
   initialValues: props.modelValue ? props.modelValue : defaultComment()
 })
+const { values, handleSubmit, setValues } = form
 
-const commentText = defineInputBinds('text', { validateOnBlur: false })
+const {
+  value: commentText,
+  errors,
+  errorMessage,
+  meta,
+  setTouched
+} = useField<string>('text', toTypedSchema(zod.string().nonempty().min(3)))
 
 const saveComment = handleSubmit(() => {
   emits('update:modelValue', { ...values, answerTo: commentToAnswer.value })
@@ -71,7 +70,7 @@ watch(
       setValues(value)
     } else {
       setValues(defaultComment())
-      resetForm()
+      setTouched(false)
     }
   }
 )
@@ -84,7 +83,14 @@ watch(
     </div>
     <q-form class="full-width q-py-lg" @submit.prevent="saveComment">
       <div>
-        <form-input type="textarea" :value="commentText" :errors="errors.text" />
+        <q-input
+          type="textarea"
+          v-model="commentText"
+          :error="!!errors.length && meta.touched"
+          :error-message="errorMessage"
+          bottom-slots
+          outlined
+        />
       </div>
       <q-btn type="submit" :disable="disabled" icon="send" class="block q-ml-auto" />
     </q-form>

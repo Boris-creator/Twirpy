@@ -22,7 +22,10 @@ const isSliderOpen = ref(false)
         </div>
       </div>
       <div class="q-mt-lg flex justify-center text-h4">
-        <slot name="actions" />
+        <q-btn-group>
+          <q-btn label="comments" icon="group" @click="isSliderOpen = !isSliderOpen" />
+          <slot name="actions" />
+        </q-btn-group>
       </div>
     </div>
   </template>
@@ -40,13 +43,15 @@ const isSliderOpen = ref(false)
           <slot name="downloads" />
         </div>
         <div class="q-mt-lg text-h4">
-          <slot name="actions" />
+          <q-btn-group>
+            <q-btn label="comments" icon="group" @click="isSliderOpen = !isSliderOpen" />
+            <slot name="actions" />
+          </q-btn-group>
         </div>
       </div>
-      <q-drawer v-model="isSliderOpen" overlay side="right" :width="500">
-        <slot name="comments" v-if="isSliderOpen" />
-      </q-drawer>
     </div>
   </template>
-  <q-btn label="comments" @click="isSliderOpen = !isSliderOpen" />
+  <q-drawer v-model="isSliderOpen" overlay side="right" :width="500">
+    <slot name="comments" v-if="isSliderOpen" />
+  </q-drawer>
 </template>

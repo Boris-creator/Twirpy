@@ -6,7 +6,7 @@ import { ref, type PropType, computed } from 'vue'
 import type { Book } from '@/types/Book'
 import type { Comment, ThreadComment } from '@/types/Comment'
 import type { Nullable, NullableFields } from '@/types/utils'
-import * as l from 'lodash'
+import l from 'lodash'
 
 type CommentsFilter = Partial<{
   bookId: number
@@ -51,7 +51,7 @@ const { mutate: addComment, isLoading: isAdding } = useMutation(
       currentComment.value = null
 
       if (comment.answerTo) {
-        const answeredComment = l.find(comments, { id: comment.answerTo.id })
+        const answeredComment = l.find(comments, { id: comment.answerTo.id }) as ThreadComment
         answeredComment.answers_count++
         commentToAnswer.value = null
       }
@@ -65,7 +65,7 @@ const { mutate: updateComment, isLoading: isUpdating } = useMutation(
   {
     onSuccess(comment) {
       const comments = client.getQueryData<Array<Comment>>(queryKey) as Array<Comment>
-      const commentToUpdate = l.find(comments, { id: comment.id })
+      const commentToUpdate = l.find(comments, { id: comment.id }) as Comment
       Object.assign(commentToUpdate, comment)
       currentComment.value = null
     }

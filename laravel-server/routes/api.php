@@ -31,4 +31,8 @@ Route::namespace('App\Http\Controllers\Api')->group(function () {
 
     Route::apiResource('publishers', Api\PublisherController::class);
     Route::apiResource('comments', Api\CommentController::class);
+    Route::apiResource('wishes', Api\WishController::class);
+    Route::prefix('offers')->group(function () {
+        Route::post('/new', [Api\WishOfferController::class, 'offer']);
+    });
 })->middleware('auth:sanctum');
