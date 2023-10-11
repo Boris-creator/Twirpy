@@ -29,7 +29,7 @@ class WishOfferRequest extends FormRequest
     {
         return [
             'book_id' => ['required', 'integer'],
-            'wish_id' => ['required', 'integer']
+            'wish_id' => ['required', 'integer'],
         ];
     }
 
@@ -44,19 +44,21 @@ class WishOfferRequest extends FormRequest
                     Book::findOrFail($this->input('book_id'));
                 } catch (ModelNotFoundException $err) {
                     $validator->errors()->add('book_id', 'book not found');
+
                     return;
                 }
                 try {
                     Wish::findOrFail($this->input('wish_id'));
                 } catch (ModelNotFoundException $err) {
                     $validator->errors()->add('wish_id', 'wish not found');
+
                     return;
                 }
                 if (WishOffer::where([
                     'book_id' => $this->input('book_id'),
-                    'wish_id' => $this->input('wish_id')
+                    'wish_id' => $this->input('wish_id'),
                 ])
-                ->exists()) {
+                    ->exists()) {
                     $validator->errors()->add('wish', 'already offered');
                 }
             },

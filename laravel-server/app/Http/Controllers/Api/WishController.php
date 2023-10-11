@@ -16,6 +16,7 @@ class WishController extends Controller
     {
         return $request->whenHas('bookId', function ($id) {
             $book = Book::findOrFail($id);
+
             return Wish::searchByBookFilter($book);
         }, function () {
             return Wish::all();
@@ -30,6 +31,7 @@ class WishController extends Controller
         $wish = new Wish($request->all());
         $wish->user_id = $request->user()->id;
         $wish->save();
+
         return $wish;
     }
 

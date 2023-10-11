@@ -1,14 +1,15 @@
 <?php
 
 use App\Models;
+use App\Traits\BookSchema;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Traits\BookSchema;
 
 return new class extends Migration
 {
     use BookSchema;
+
     /**
      * Run the migrations.
      */
