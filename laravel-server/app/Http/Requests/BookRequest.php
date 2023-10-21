@@ -17,6 +17,9 @@ class BookRequest extends FormRequest
             'file' => [
                 'required', 'file', 'max:800000', 'mimes:pdf',
                 function (string $attribute, mixed $file, Closure $fail): void {
+                    if ($this->validator->errors()->has('file')) {
+                        return;
+                    }
                     $hash = sha1_file($file);
                     if (Book::whereHashSum($hash)->exists()) {
                         $fail("{$attribute} already exists.");
