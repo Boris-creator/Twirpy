@@ -14,17 +14,11 @@ class ProcessUploadedBook implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(public Book $book)
     {
         //
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(BookService $service): void
     {
         $service->fetchBibliography($this->book);

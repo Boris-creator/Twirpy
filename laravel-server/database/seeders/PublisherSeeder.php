@@ -7,9 +7,6 @@ use Illuminate\Database\Seeder;
 
 class PublisherSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         Publisher::factory()->createMany([

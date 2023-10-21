@@ -9,11 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureCanManageComment
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $commentId = $request->route()->parameter('comment');

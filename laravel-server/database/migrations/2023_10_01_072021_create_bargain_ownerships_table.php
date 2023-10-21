@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\BargainOwnership;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -8,12 +9,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('bargain_ownerships', function (Blueprint $table) {
+        Schema::create(app(BargainOwnership::class)->getTable(), function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->foreignIdFor(Book::class);
@@ -26,11 +24,8 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('bargain_ownerships');
+        Schema::dropIfExists(app(BargainOwnership::class)->getTable());
     }
 };

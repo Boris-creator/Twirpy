@@ -7,12 +7,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create(app(Models\Book::class)->getTable(), function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('title');
@@ -34,11 +31,8 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('books');
+        Schema::dropIfExists(app(Models\Book::class)->getTable());
     }
 };

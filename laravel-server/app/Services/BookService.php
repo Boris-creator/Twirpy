@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class BookService
 {
-    public static function upload(Book $newBook, UploadedFile $file)
+    public static function upload(Book $newBook, UploadedFile $file): Book
     {
         $file_name = $newBook->id.'.'.$file->getClientOriginalExtension();
         $newBook->filename = $file_name;

@@ -2,12 +2,48 @@
 
 namespace App\Models;
 
+use Barryvdh\LaravelIdeHelper\Eloquent;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
+/**
+ * App\Models\Comment
+ *
+ * @property int $id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property string $text
+ * @property int|null $answer_to
+ * @property int $book_id
+ * @property int $user_id
+ * @property-read Comment|null $answerTo
+ * @property-read Collection<int, Comment> $answers
+ * @property-read int|null $answers_count
+ * @property-read User|null $author
+ * @property-read bool $edited
+ * @property-read mixed $related
+ * @property-read Collection<int, Comment> $relatedComments
+ * @property-read int|null $related_comments_count
+ *
+ * @method static Builder|Comment newModelQuery()
+ * @method static Builder|Comment newQuery()
+ * @method static Builder|Comment query()
+ * @method static Builder|Comment whereAnswerTo($value)
+ * @method static Builder|Comment whereBookId($value)
+ * @method static Builder|Comment whereCreatedAt($value)
+ * @method static Builder|Comment whereId($value)
+ * @method static Builder|Comment whereText($value)
+ * @method static Builder|Comment whereUpdatedAt($value)
+ * @method static Builder|Comment whereUserId($value)
+ *
+ * @mixin Eloquent
+ */
 class Comment extends Model
 {
     use HasFactory;
@@ -42,17 +78,17 @@ class Comment extends Model
         return $this->created_at != $this->updated_at;
     }
 
-    public function getRelatedAttribute()
+    public function getRelatedAttribute(): array
     {
         return $this->flatTreeViewToArray();
     }
 
-    public static function withRelations()
+    public static function withRelations(): Builder
     {
         return self::query()
             ->with('author')
             ->withCount('answers')
-            ->with(['answerTo' => function ($query) {
+            ->with(['answerTo' => function (Builder $query) {
                 return $query->with('author')->select(['id', 'text', 'user_id']);
             }]);
     }

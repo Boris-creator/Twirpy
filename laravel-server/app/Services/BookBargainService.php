@@ -9,12 +9,12 @@ use Illuminate\Support\Facades\DB;
 
 class BookBargainService extends BargainService
 {
-    public static function canBeBought(User $buyer, Book $book): bool
+    public static function canBeBought(User $buyer, Book $resource): bool
     {
-        return ! $buyer->accessibleBooks->contains($book);
+        return ! $buyer->accessibleBooks->contains($resource);
     }
 
-    public static function buy(int $userId, int $bookId)
+    public static function buy(int $userId, int $bookId): Book
     {
         $user = User::find($userId);
         $book = Book::find($bookId);
