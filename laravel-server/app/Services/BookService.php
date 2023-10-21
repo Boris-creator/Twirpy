@@ -12,13 +12,15 @@ use Illuminate\Support\Facades\Storage;
 
 class BookService
 {
-    public static function upload(Book $newBook, UploadedFile $file)
+    private static string $storagePath = 'books';
+
+    public static function upload(Book $newBook, UploadedFile $file): Book
     {
         $file_name = $newBook->id.'.'.$file->getClientOriginalExtension();
         $newBook->filename = $file_name;
 
         //$file->storeAs('books', $file_name); //#1
-        Storage::disk('local')->put('books'.DIRECTORY_SEPARATOR.$file_name, file_get_contents($file)); //#2
+        Storage::disk('local')->put(self::$storagePath.DIRECTORY_SEPARATOR.$file_name, file_get_contents($file)); //#2
 
         $newBook->hash_sum = sha1_file(storage_path().'/app/books/'.$file_name);
 
@@ -51,12 +53,22 @@ class BookService
         $publisherId = $request->input('publisher.id');
         if (! isset($publisherId) && $request->has('publisher.name')) {
             global $publisherId;
-            $newPublisher = Publisher::query()->create([
+            $newPublisher = Publisher::create([
                 'name' => $request->input('publisher.name'),
             ]);
             $publisherId = $newPublisher->id;
         }
 
         return $publisherId;
+    }
+
+    public static function storeBookCover(string $filename, int $bookId): void
+    {
+        $path = storage_path().'/app/'.self::$storagePath.'/';
+        $extract_path = storage_path().'/app/public/thumbnails';
+        $pdf = $path.$filename;
+        $command = sprintf('pdfimages -j -f 1 -l 1 %s %s/%d', $pdf, $extract_path, $bookId);
+        logger($command);
+        exec($command);
     }
 }

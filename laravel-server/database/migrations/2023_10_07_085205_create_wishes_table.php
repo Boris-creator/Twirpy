@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use App\Models\Wish;
 use App\Traits\BookSchema;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,22 +11,16 @@ return new class extends Migration
 {
     use BookSchema;
 
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('wishes', function (Blueprint $table) {
+        Schema::create(app(Wish::class)->getTable(), function (Blueprint $table) {
             $this->create($table);
-            $table->foreignIdFor(\App\Models\User::class);
+            $table->foreignIdFor(User::class);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('wishes');
+        Schema::dropIfExists(app(Wish::class)->getTable());
     }
 };

@@ -8,29 +8,16 @@ use Illuminate\Support\Facades\File;
 
 class RefreshCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'refresh';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Run migrations and seeders';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function handle(): void
     {
         $executionStart = now();
 
         Artisan::call('migrate:refresh --seed');
-        Artisan::call('queue:work');
+        // Artisan::call('queue:work');
         File::cleanDirectory(storage_path().'/app/books');
         File::cleanDirectory(storage_path().'/app/public/thumbnails');
         File::put(storage_path().'/app/books/.gitkeep', '');
