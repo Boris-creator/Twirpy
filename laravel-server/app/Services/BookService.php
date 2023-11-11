@@ -62,12 +62,12 @@ class BookService
         return $publisherId;
     }
 
-    public static function storeBookCover(string $filename, int $bookId): void {
+    public static function storeBookCover(string $filename, int $bookId): void
+    {
         $path = storage_path().'/app/'.self::$storagePath.'/';
         $extract_path = storage_path().'/app/public/thumbnails';
         $pdf = $path.$filename;
         $command = sprintf('pdfimages -j -f 1 -l 1 %s %s/%d', $pdf, $extract_path, $bookId);
-        logger($command);
         exec($command);
     }
 }

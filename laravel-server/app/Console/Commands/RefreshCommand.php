@@ -12,7 +12,8 @@ class RefreshCommand extends Command
 
     protected $description = 'Run migrations and seeders';
 
-    public function handle(): void {
+    public function handle(): void
+    {
         $executionStart = now();
 
         Artisan::call('migrate:refresh --seed');

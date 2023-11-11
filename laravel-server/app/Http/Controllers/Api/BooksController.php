@@ -6,15 +6,17 @@ use App\Http\Controllers\Api\DTO\BookFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookRequest;
 use App\Http\Requests\BookUpdateRequest;
+use App\Http\Resources;
 use App\Models\Book;
 use App\Models\User;
 use App\Services\BookService;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BooksController extends Controller
 {
-    public function index()
+    public function index(): array
     {
         $filter = new BookFilter();
         $filter->accessible = request()->boolean('accessible');
@@ -22,10 +24,10 @@ class BooksController extends Controller
 
         $books = Book::search($filter);
 
-        return \App\Http\Resources\Book::collection($books)->toArray(\request());
+        return Resources\Book::collection($books)->toArray(\request());
     }
 
-    public function store(BookRequest $request)
+    public function store(BookRequest $request): Book
     {
         $userId = $request->user()->id;
 
@@ -44,12 +46,12 @@ class BooksController extends Controller
         return BookService::upload($newBook, $file);
     }
 
-    public function show(string $id)
+    public function show(string $id): array
     {
-        return (new \App\Http\Resources\Book(Book::with('publisher')->withCount('downloads')->findOrFail($id)))->toArray(\request());
+        return (new Resources\Book(Book::with('publisher')->withCount('downloads')->findOrFail($id)))->toArray(\request());
     }
 
-    public function update(BookUpdateRequest $request, string $id)
+    public function update(BookUpdateRequest $request, string $id): array
     {
         $publisherId = BookService::selectOrCreatePublisher($request);
         $existingBook = Book::query()->findOrFail($id);
@@ -61,7 +63,7 @@ class BooksController extends Controller
         ));
         $existingBook->save();
 
-        return (new \App\Http\Resources\Book($existingBook))->toArray($request);
+        return (new Resources\Book($existingBook))->toArray($request);
     }
 
     public function destroy(string $id)
@@ -69,7 +71,7 @@ class BooksController extends Controller
         //
     }
 
-    public function download(string $id)
+    public function download(string $id): StreamedResponse
     {
         $book = Book::query()->findOrFail($id);
         if (! isset($book->filename)) {

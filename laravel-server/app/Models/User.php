@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasPermissions;
 use Barryvdh\LaravelIdeHelper\Eloquent;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -56,7 +57,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasPermissions, Notifiable;
 
     protected $fillable = [
         'name',
@@ -86,5 +87,10 @@ class User extends Authenticatable
     public function accessibleBooks(): BelongsToMany
     {
         return $this->BelongsToMany(Book::class, 'accessible_books')->withTimestamps();
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'users_roles');
     }
 }

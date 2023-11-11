@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use App\Models\Book;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator;
 
 class BookRequest extends FormRequest
 {
