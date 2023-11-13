@@ -7,11 +7,10 @@ export async function up(knex: Knex): Promise<void> {
 		.createTable(tableName, function (table) {
 			table
 				.integer('id')
+				.unsigned()
 				.unique()
 				.primary()
 				.notNullable()
-			table
-				.timestamps()
 			table
 				.string('email')
 				.unique()
@@ -21,7 +20,9 @@ export async function up(knex: Knex): Promise<void> {
 				.unique()
 				.notNullable()
 			table.string('password').notNullable()
-			table.timestamps(true, true)
+			table.double('balance').defaultTo(30 * 10 ** 3)
+			table
+				.timestamps(true, true)
 		})
 }
 

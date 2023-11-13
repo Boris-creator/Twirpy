@@ -1,17 +1,25 @@
 import fastify from 'fastify'
 import fastifyEnv from '@fastify/env'
+import cors from '@fastify/cors'
 import {options, ServerWithEnv} from '@/env'
-import knex from 'knex'
-import config from '@/knex/knexfile'
+import registerRoutes from '@/routes/api'
+import knexInstance from '@/knex/knexfile'
 
 const server = fastify()
 
-server.get('/ping', async (request, reply) => {
-	return 'pong\n'
-})
-
 server
 	.register(fastifyEnv, options)
+	.register(cors, {
+		credentials: true,
+		origin: (origin, cb) => {
+			if(origin && new URL(origin).hostname === 'localhost'){
+				cb(null, true)
+				return
+			}
+			cb(new Error('Not allowed'), false)
+		}
+	})
+	.register(registerRoutes, {prefix: 'api'})
 	.ready().then(() => {
 		const app = server as unknown as ServerWithEnv
 		app.listen({port: app['config'].PORT}, (err, address) => {
@@ -21,8 +29,8 @@ server
 			}
 			console.log(`Server listening at ${address}`)
 		})
-		const db = knex(config[app['config'].NODE_ENV])
-		db.migrate.latest().catch(console.log)
+
+		knexInstance.migrate.latest().catch(console.log)
 	})
 
 

@@ -1,6 +1,7 @@
 import type { Knex } from 'knex'
 import dotenv from 'dotenv'
 import path from 'path'
+import knex from 'knex'
 
 dotenv.config({path: path.resolve(__dirname, '../../.env')})
 
@@ -17,6 +18,9 @@ const config: { [key: string]: Knex.Config } = {
 		migrations: {
 			tableName: 'knex_migrations',
 			directory: path.join(__dirname, './migrations')
+		},
+		seeds: {
+			directory: path.join(__dirname, './seeds')
 		}
 	},
 
@@ -38,4 +42,5 @@ const config: { [key: string]: Knex.Config } = {
 
 }
 
-export default config
+const knexInstance = knex(config[process.env.NODE_ENV as 'development' | 'production'])
+export default knexInstance
