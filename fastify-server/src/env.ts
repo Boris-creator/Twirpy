@@ -1,5 +1,3 @@
-import {FastifyInstance} from 'fastify'
-
 const schema = {
 	type: 'object',
 	required: ['PORT'],
@@ -17,4 +15,9 @@ const schema = {
 const configKey = 'config'
 export const options = {schema, configKey, dotenv: true}
 
-export type ServerWithEnv = FastifyInstance & Record<typeof configKey, { PORT: number, NODE_ENV: 'development' | 'production' }>
+declare module 'fastify' {
+	interface FastifyInstance {
+		[configKey]: { PORT: number, NODE_ENV: 'development' | 'production' }
+	}
+}
+

@@ -1,7 +1,6 @@
 import type { Knex } from 'knex'
 import dotenv from 'dotenv'
 import path from 'path'
-import knex from 'knex'
 
 dotenv.config({path: path.resolve(__dirname, '../../.env')})
 
@@ -42,5 +41,5 @@ const config: { [key: string]: Knex.Config } = {
 
 }
 
-const knexInstance = knex(config[process.env.NODE_ENV as 'development' | 'production'])
-export default knexInstance
+const knexConfig = config[process.env.NODE_ENV as 'development' | 'production']
+export default knexConfig

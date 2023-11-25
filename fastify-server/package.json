@@ -17,8 +17,11 @@
     "@fastify/env": "^4.2.0",
     "bcrypt": "^5.1.1",
     "fastify": "^4.24.3",
+    "fastify-file-upload": "^4.0.0",
+    "fastify-type-provider-zod": "^1.1.9",
     "knex": "^3.0.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.1",
