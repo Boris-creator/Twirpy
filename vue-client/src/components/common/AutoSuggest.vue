@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, type PropType, ref, watch } from 'vue'
 import { debounce } from 'quasar'
+import {useI18n} from "vue-i18n";
 
 type Option = string | number | Record<any, any> | null
 
@@ -30,8 +31,8 @@ const props = defineProps({
     default: false
   },
   noOptionsText: {
-    type: String,
-    default: 'create new from input'
+    type: String as PropType<string | null>,
+    default: null
   }
 })
 
@@ -39,6 +40,8 @@ const emits = defineEmits<{
   'update:modelValue': [value: unknown]
   'update:query': [value: string]
 }>()
+
+const { t } = useI18n()
 
 const getOptionLabel = (option: Option) => {
   if ((option ?? null) === null) {
@@ -71,6 +74,8 @@ const onInput = (inputValue: string) => {
 const createOption = () => {
   innerValue.value = props.labelToOption(query.value)
 }
+
+const noOptions = computed(() => props.noOptionsText ?? t('common.createOption'))
 
 watch(innerValue, (value) => {
   query.value = getOptionLabel(value)
@@ -115,7 +120,7 @@ watch(innerValue, (value) => {
             }
           "
         >
-          <q-item-label>{{ noOptionsText }}</q-item-label>
+          <q-item-label>{{ noOptions }}</q-item-label>
         </q-item>
       </q-list>
     </slot>

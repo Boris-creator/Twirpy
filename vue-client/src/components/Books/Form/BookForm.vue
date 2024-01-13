@@ -105,10 +105,10 @@ const uploadBook = handleSubmit(async (value: BookEntity) => {
       :error="!!fileErrors.length"
       :error-message="fileErrorMessage"
       :disable="inUpdatingMode"
-      label="Select book"
+      :label="$t('books.form.file.label')"
       class="q-mt-md"
     />
-    <q-btn type="submit" label="save" class="q-mt-md" />
+    <q-btn type="submit" :label="$t('common.save')" class="q-mt-md" />
   </q-form>
 </template>
 <style scoped lang="scss">

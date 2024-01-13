@@ -66,7 +66,7 @@ const onSubmit = handleSubmit(async (value: NullableFields<Wish>) => {
     <bibliography-form :model-value="wish" />
     <q-input
       v-model.number="price"
-      label="Rewards"
+      :label="$t('wishes.form.rewards.label')"
       :error="!!errors.length"
       :error-message="errors[0]"
       bottom-slots
@@ -74,7 +74,7 @@ const onSubmit = handleSubmit(async (value: NullableFields<Wish>) => {
       outlined
       class="q-mt-md"
     />
-    <q-btn type="submit" label="save" class="q-mt-md" />
+    <q-btn type="submit" :label="$t('common.save')" class="q-mt-md" />
   </q-form>
 </template>
 <style scoped lang="scss">

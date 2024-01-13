@@ -25,7 +25,7 @@ watch(
 </script>
 <template>
   <div>
-    <q-toggle v-model="filter.accessible" label="Show only books I bought" />
-    <q-toggle v-model="filter.owned" label="Show only books I upload" />
+    <q-toggle v-model="filter.accessible" :label="$t('books.filter.accessible')" />
+    <q-toggle v-model="filter.owned" :label="$t('books.filter.owned')" />
   </div>
 </template>

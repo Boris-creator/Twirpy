@@ -19,7 +19,7 @@ const {
   value: title,
   errors: titleErrors,
   errorMessage: titleErrorMessage
-} = useField('title', toTypedSchema(zod.string().nonempty()))
+} = useField('title', toTypedSchema(zod.string().min(1)))
 const {
   value: isbn,
   errors: isbnErrors,
@@ -72,7 +72,7 @@ onBeforeMount(() => {
 <template>
   <q-input
     v-model="title"
-    label="Title"
+    :label="$t('books.form.title.label')"
     :error="!!titleErrors.length"
     :error-message="titleErrorMessage"
     bottom-slots
@@ -83,7 +83,7 @@ onBeforeMount(() => {
   </q-input>
   <q-input
     v-model="isbn"
-    label="ISBN"
+    :label="$t('books.form.isbn.label')"
     :error="!!isbnErrors.length"
     :error-message="isbnErrorMessage"
     bottom-slots

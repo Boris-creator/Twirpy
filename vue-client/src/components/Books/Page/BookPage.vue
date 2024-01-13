@@ -30,7 +30,7 @@ const isFetchingBuy = ref(false)
 const isWishSearchOpen = ref(false)
 const inEditingMode = ref(false)
 
-const { data: book } = useQuery<Nullable<Book>>(
+const bookQuery = useQuery<Nullable<Book>>(
   QUERY_KEY,
   async () => (await useResource<Book>('books').show(props.id)).data,
   {
@@ -43,6 +43,7 @@ const { data: book } = useQuery<Nullable<Book>>(
     retry: 1
   }
 )
+const book = bookQuery.data as Book
 const bookQueryClient = useQueryClient()
 
 const { data: wishes, refetch } = useQuery<Array<any>>(
@@ -96,9 +97,9 @@ watchEffect(() => {
         {{ book.year }}
       </template>
       <template #downloads>
-        <a v-if="book.accessible" :href="`${VITE_API_URL}/books/${book.id}/download`" download
-          >download</a
-        >
+        <a v-if="book.accessible" :href="`${VITE_API_URL}/books/${book.id}/download`" download>{{
+          $t('books.card.download')
+        }}</a>
         <q-btn v-else :disable="isFetchingBuy" :loading="isFetchingBuy" flat @click="buyBook"
           >buy ({{ book.price }})</q-btn
         >

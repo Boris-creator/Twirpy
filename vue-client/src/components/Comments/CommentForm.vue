@@ -46,10 +46,9 @@ const commentToAnswer = computed<Nullable<Comment>>({
   }
 })
 
-const form = useForm<NullableFields<Comment>>({
+const { values, handleSubmit, setValues } = useForm<NullableFields<Comment>>({
   initialValues: props.modelValue ? props.modelValue : defaultComment()
 })
-const { values, handleSubmit, setValues } = form
 
 const {
   value: commentText,
@@ -57,7 +56,7 @@ const {
   errorMessage,
   meta,
   setTouched
-} = useField<string>('text', toTypedSchema(zod.string().nonempty().min(3)))
+} = useField<string>('text', toTypedSchema(zod.string().min(3)))
 
 const saveComment = handleSubmit(() => {
   emits('update:modelValue', { ...values, answerTo: commentToAnswer.value })

@@ -110,7 +110,7 @@ const isDisplayAnswers = computed(() => !!searchFilter.value.answerTo)
     <div v-if="isDisplayAnswers">
       <q-btn
         flat
-        label="see all"
+        :label="$t('comments.all')"
         class="full-width"
         @click="searchFilter = defaultSearchFilter()"
       />
@@ -133,7 +133,7 @@ const isDisplayAnswers = computed(() => !!searchFilter.value.answerTo)
               icon="edit"
               @click="currentComment = comment"
             >
-              <q-tooltip>edit</q-tooltip>
+              <q-tooltip>{{ $t('common.edit') }}</q-tooltip>
             </q-btn>
             <q-btn
               v-if="comment.owned"
@@ -146,14 +146,14 @@ const isDisplayAnswers = computed(() => !!searchFilter.value.answerTo)
               <q-tooltip>delete</q-tooltip>
             </q-btn>
             <q-btn flat size="sm" icon="reply" @click="answerTo(comment)">
-              <q-tooltip>reply</q-tooltip>
+              <q-tooltip>{{ $t('comments.tooltips.reply') }}</q-tooltip>
             </q-btn>
             <q-btn flat size="sm" :label="comment.answers_count" @click="searchAnswers(comment)">
-              <q-tooltip>look answers</q-tooltip>
+              <q-tooltip>{{ $t('comments.tooltips.answers') }}</q-tooltip>
             </q-btn>
           </q-btn-group>
         </q-card-actions>
-        <span v-if="comment.edited">edited</span>
+        <span v-if="comment.edited">{{ $t('comments.edited') }}</span>
       </template>
     </q-chat-message>
     <!--<q-card v-for="comment of comments" :key="comment.id" class="q-mt-md">

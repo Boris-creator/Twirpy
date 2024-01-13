@@ -1,0 +1,45 @@
+{
+  "common": {
+    "save": "save",
+    "edit": "edit",
+    "createOption": "create new from input"
+  },
+  "books": {
+    "filter": {
+      "accessible": "Show only books I bought",
+      "owned": "Show only books I upload"
+    },
+    "page": {
+      "empty": "Here is no books yet."
+    },
+    "card": {
+      "download": "download"
+    },
+    "form": {
+      "title": {
+        "label": "Title"
+      },
+      "isbn": {
+        "label": "ISBN"
+      },
+      "file": {
+        "label": "Select a book on your device"
+      }
+    }
+  },
+  "wishes": {
+    "form": {
+      "rewards": {
+        "label": "Rewards"
+      }
+    }
+  },
+  "comments": {
+    "edited": "edited",
+    "all": "see all",
+    "tooltips": {
+      "reply": "reply",
+      "answers": "see answers"
+    }
+  }
+}

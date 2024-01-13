@@ -70,7 +70,7 @@ onBeforeMount(search)
           </q-card-section>
         </q-card>
       </template>
-      <template v-if="!books.length"><h1 class="text-center">Here is no books yet.</h1></template>
+      <template v-if="!books.length"><h1 class="text-center">{{$t('books.page.empty')}}</h1></template>
     </template>
     <q-drawer v-model="isFilterOpen" overlay bordered>
       <book-search-filter v-model="filter" />
