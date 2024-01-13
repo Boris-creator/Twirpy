@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create(app(BargainOwnership::class)->getTable(), function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->unsignedBigInteger('buyer_id');
+            $table->unsignedBigInteger('seller_id');
             $table->foreignIdFor(Book::class);
             $table->foreign('buyer_id')->references('id')
                 ->on(app(User::class)->getTable());

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { useQuery, useQueryClient } from 'vue-query'
 import { useRouter } from 'vue-router'
 import { api, useResource } from '@/axios'
@@ -12,6 +12,8 @@ import CommentsThread from '@/components/Comments/CommentsThread.vue'
 import type { AxiosError } from 'axios'
 import type { Nullable } from '@/types/utils'
 import type { Book, BookBibliography } from '@/types/Book'
+import WishesList from '@/components/Wishes/WishesList.vue'
+import type { Wish } from '@/types/Wish'
 
 const router = useRouter()
 
@@ -22,8 +24,11 @@ const props = defineProps({
   }
 })
 const QUERY_KEY = 'book'
+const WISHES_QUERY_KEY = 'wishes'
 
 const isFetchingBuy = ref(false)
+const isWishSearchOpen = ref(false)
+const inEditingMode = ref(false)
 
 const { data: book } = useQuery<Nullable<Book>>(
   QUERY_KEY,
@@ -40,7 +45,11 @@ const { data: book } = useQuery<Nullable<Book>>(
 )
 const bookQueryClient = useQueryClient()
 
-const inEditingMode = ref(false)
+const { data: wishes, refetch } = useQuery<Array<any>>(
+  WISHES_QUERY_KEY,
+  async () => (await useResource<any>('wishes').search({ bookId: props.id })).data,
+  { enabled: false }
+)
 
 const updateBook = (bookData: Partial<BookBibliography>) => {
   bookQueryClient.setQueryData(QUERY_KEY, {
@@ -61,6 +70,15 @@ const buyBook = () => {
       isFetchingBuy.value = false
     })
 }
+const offerBook = (wish: Wish) => {
+  api.post('/offers/new', { book_id: props.id, wish_id: wish.id })
+}
+
+watchEffect(() => {
+  if (isWishSearchOpen.value) {
+    refetch.value()
+  }
+})
 </script>
 <template>
   <template v-if="book">
@@ -86,8 +104,9 @@ const buyBook = () => {
         >
         <span class="block"> downloaded by {{ book.downloads_count }} users </span>
       </template>
-      <template #actions>
-        <q-btn v-if="book.owned" icon="edit" flat @click="inEditingMode = true"> edit </q-btn>
+      <template v-if="book.owned" #actions>
+        <q-btn icon="edit" flat @click="inEditingMode = true"> edit </q-btn>
+        <q-btn icon="paid" flat @click="isWishSearchOpen = true"> wishes </q-btn>
       </template>
       <template #comments>
         <comments-thread :subject="book" />
@@ -98,6 +117,13 @@ const buyBook = () => {
         <book-form :model-value="book" class="full-width" @update:model-value="updateBook" />
       </div>
     </q-dialog>
+    <q-drawer v-model="isWishSearchOpen" overlay side="right" :width="500">
+      <wishes-list :wishes="wishes">
+        <template #actions="{ wish }">
+          <q-btn @click="offerBook(wish)">offer</q-btn>
+        </template>
+      </wishes-list>
+    </q-drawer>
   </template>
 </template>
 <style scoped lang="scss">

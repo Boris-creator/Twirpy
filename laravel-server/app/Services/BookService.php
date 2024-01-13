@@ -62,7 +62,8 @@ class BookService
         return $publisherId;
     }
 
-    public static function storeBookCover(string $filename, int $bookId): void {
+    public static function storeBookCover(string $filename, int $bookId): void
+    {
         $path = storage_path().'/app/'.self::$storagePath.'/';
         $extract_path = storage_path().'/app/public/thumbnails';
         $pdf = $path.$filename;

@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { computed, PropType, ref, watch } from 'vue'
+import { computed, type PropType, ref, watch } from 'vue'
 import { debounce } from 'quasar'
+
+type Option = string | number | Record<any, any> | null
 
 const props = defineProps({
   modelValue: {
-    type: [String, Number, Object] as PropType<string | number | Record<any, any> | null>,
+    type: [String, Number, Object, null] as PropType<Option | null>,
     required: true
   },
   options: {
-    type: Array,
+    type: Array as PropType<Array<Record<string, any>>>,
     default: () => []
   },
   optionLabel: {
@@ -16,7 +18,7 @@ const props = defineProps({
     default: 'label'
   },
   labelToOption: {
-    type: Function as PropType<(value: string) => unknown>,
+    type: Function as PropType<(value: string) => Option>,
     default: (value: string) => value
   },
   inputProps: {
@@ -34,18 +36,18 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  (e: 'update:modelValue', value: unknown): void
-  (e: 'update:query', value: string): void
+  'update:modelValue': [value: unknown]
+  'update:query': [value: string]
 }>()
 
-const getOptionLabel = (option: unknown) => {
+const getOptionLabel = (option: Option) => {
   if ((option ?? null) === null) {
     return null
   }
   if (typeof props.optionLabel === 'function') {
     return props.optionLabel(option)
   }
-  return option[props.optionLabel]
+  return (option as Record<string, any>)[props.optionLabel]
 }
 
 const isOpen = ref(false)
@@ -77,9 +79,10 @@ watch(innerValue, (value) => {
 <template>
   <q-input
     v-bind="inputProps"
-    v-model="query"
+    v-model.trim="query"
     @update:modelValue="onInput"
     @focus="isOpen = true"
+    bottom-slots
   />
   <q-card v-show="isOpen" class="absolute full-width bg-white z-top">
     <slot name="options">

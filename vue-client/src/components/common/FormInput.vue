@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import type { BaseInputBinds } from 'vee-validate'
+import type { FieldContext } from 'vee-validate'
 
 type ModelModifiers = {
   noEmptyString: boolean
@@ -8,7 +8,7 @@ type ModelModifiers = {
 
 const props = defineProps({
   value: {
-    type: Object as PropType<BaseInputBinds<any>>,
+    type: Object as PropType<FieldContext<string | number | null>>,
     required: true
   },
   errors: {
@@ -31,13 +31,11 @@ const onInput = (v: string | number | null) => {
 <template>
   <q-input
     v-bind="$attrs"
-    :model-value="value.value"
+    :model-value="value"
     :error="!!errors"
     :error-message="errors ?? ''"
     bottom-slots
     outlined
-    @update:model-value="value.onInput(onInput($event) as Event)"
-    @blur="value.onBlur"
   >
     <template #error>
       <slot name="error">

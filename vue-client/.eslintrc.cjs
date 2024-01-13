@@ -25,7 +25,7 @@ module.exports = {
     'vue/block-order': [
       'error',
       {
-        order: [['script', 'template'], 'style']
+        order: ['script', 'template', 'style']
       }
     ],
     'prettier/prettier': 'warn',
