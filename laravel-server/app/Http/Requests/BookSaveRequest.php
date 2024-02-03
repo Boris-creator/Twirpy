@@ -11,7 +11,10 @@ class BookSaveRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $bookId = $this->route()->parameters()['book'];
+        $bookId = $this->route('id');
+        if (empty($bookId)) {
+            return true;
+        }
         $userId = $this->user()->id;
 
         return $userId == Book::find($bookId)->owner_id;
@@ -21,11 +24,10 @@ class BookSaveRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'id' => ['nullable', 'integer', 'exists:books'],
             'publishedBy.id' => ['nullable', 'integer', 'exists:publishers,id'],
             'isbn' => ['nullable', 'string', 'regex:/^\d{10}(\d{3})?$/'],
             'file' => [
-                Rule::requiredIf(fn() => !empty($this->route('id'))),
+                Rule::requiredIf(fn () => ! empty($this->route('id'))),
                 'file', 'max:800000', 'mimes:pdf',
                 function (string $attribute, mixed $file, Closure $fail): void {
                     if ($this->validator->errors()->has('file')) {

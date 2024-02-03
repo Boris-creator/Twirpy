@@ -103,4 +103,13 @@ class Comment extends Model
 
         return $answers;
     }
+
+    protected static function booted(): void
+    {
+        parent::booted();
+        static::deleting(function (Comment $comment): void {
+            $comment->answers()->update(['answer_to' => null]);
+        });
+        //TODO: mark as an answer to deleted comment
+    }
 }

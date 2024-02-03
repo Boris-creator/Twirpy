@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\Book
+ * App\Models\BookResource
  *
  * @property int $id
  * @property Carbon|null $created_at
@@ -62,7 +62,7 @@ class Book extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $guarded = ['owner_id'];
 
     protected $hidden = ['hash_sum'];
 
@@ -71,22 +71,6 @@ class Book extends Model
     protected $attributes = [
         'price' => 300,
     ];
-
-    public static function search(BookFilter $filter): Collection
-    {
-        return self::when($filter->accessible, function (Builder $query) {
-            $query->whereHas('downloads', function (Builder $user) {
-                $user->where('users.id', auth()->id());
-            });
-        })
-            ->when($filter->owned, function (Builder $query) {
-                $query->whereHas('owner', function (Builder $user) {
-                    $user->where('users.id', '=', auth()->id());
-                });
-            }
-            )
-            ->get();
-    }
 
     public function publisher(): HasOne
     {

@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Book extends JsonResource
+class BookResource extends JsonResource
 {
     public function toArray(Request $request): array
     {

@@ -7,7 +7,8 @@ use Illuminate\Database\Schema\Blueprint;
 
 trait BookSchema
 {
-    public function create(Blueprint $table): void {
+    public function create(Blueprint $table): void
+    {
         $table->id();
         $table->timestamps();
         $table->string('title');

@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Book;
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,9 +16,11 @@ return new class extends Migration
             $table->timestamps();
             $table->longText('text');
             $table->unsignedBigInteger('answer_to')->nullable();
-            $table->foreignIdFor(\App\Models\Book::class);
-            $table->foreignIdFor(\App\Models\User::class);
-            $table->foreign('answer_to')->references('id')->on($table->getTable())->onDelete('cascade');
+            $table->foreignIdFor(Book::class);
+            $table->foreignIdFor(User::class);
+            $table->foreign('answer_to')->on($table->getTable())->references('id');
+            $table->foreign('book_id')->on(app(Book::class)->getTable())->references('id');
+            $table->foreign('user_id')->on(app(User::class)->getTable())->references('id');
         });
     }
 
